@@ -7,7 +7,7 @@ from concurrent.futures import ProcessPoolExecutor
 from sklearn.metrics import silhouette_score
 from PIL import Image
 
-NUM_WORKERS = 2  # Number of parallel workers
+NUM_WORKERS = 4  # Number of parallel workers
 
 
 # Use KMeans instead of MiniBatchKMeans for faster approximate clustering
@@ -26,7 +26,7 @@ def calculate_optimal_clusters(data, min_clusters=5, max_clusters=10):
 def dominant_colors(image_path, min_clusters=5, max_clusters=10, target_size=(150, 150), calculate_optimal=False):
     image = Image.open(image_path)  # Open the image from the path
     # Resize the image to the target size
-    image = image.resize(target_size)
+    # image = image.resize(target_size)
     ar = np.asarray(image)
     shape = ar.shape
     ar = ar.reshape(np.prod(shape[:2]), shape[2]).astype(float)
