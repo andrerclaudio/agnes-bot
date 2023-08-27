@@ -23,29 +23,29 @@ def calculate_optimal_clusters(data, min_clusters=5, max_clusters=10):
 
 
 # @lru_cache(maxsize=None)  # Cache the dominant_colors function results
-def dominant_colors(image_path, min_clusters=5, max_clusters=10, target_size=(150, 150)):
+def dominant_colors(image_path, min_clusters=5, max_clusters=10, target_size=(150, 150), calculate_optimal=False):
     image = Image.open(image_path)  # Open the image from the path
-
     # Resize the image to the target size
     image = image.resize(target_size)
-
     ar = np.asarray(image)
     shape = ar.shape
     ar = ar.reshape(np.prod(shape[:2]), shape[2]).astype(float)
 
-    # Calculate optimal number of clusters in parallel
-    with ProcessPoolExecutor(max_workers=NUM_WORKERS) as executor:
-        results = [executor.submit(calculate_optimal_clusters, ar, min_clusters, max_clusters) for _ in
-                   range(NUM_WORKERS)]
+    best_clusters = None
+    if calculate_optimal:
+        # Calculate optimal number of clusters in parallel
+        with ProcessPoolExecutor(max_workers=NUM_WORKERS) as executor:
+            results = [executor.submit(calculate_optimal_clusters, ar, min_clusters, max_clusters) for _ in
+                       range(NUM_WORKERS)]
 
-    final_scores = []
-    for result in results:
-        final_scores.extend(result.result())
+        final_scores = []
+        for result in results:
+            final_scores.extend(result.result())
 
-    best_clusters = max(final_scores, key=lambda x: x[1])[0]
+        best_clusters = max(final_scores, key=lambda x: x[1])[0]
 
     kmeans = KMeans(
-        n_clusters=best_clusters,
+        n_clusters=best_clusters if best_clusters is not None else min_clusters,
         init="k-means++",
         random_state=1000,
         n_init=3
