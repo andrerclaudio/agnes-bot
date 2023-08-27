@@ -1,2 +1,7 @@
-telegram
 # pip install python-telegram-bot --pre
+scipy
+numpy
+scikit-learn
+Pillow
+telegram
+matplotlib
