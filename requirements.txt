@@ -3,5 +3,4 @@ scipy
 numpy
 scikit-learn
 Pillow
-telegram
 matplotlib
