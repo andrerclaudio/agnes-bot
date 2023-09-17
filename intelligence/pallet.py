@@ -15,10 +15,10 @@ NUM_WORKERS = int(multiprocessing.cpu_count())  # Number of parallel workers
 
 
 # Use KMeans instead of MiniBatchKMeans for faster approximate clustering
-def calculate_optimal_clusters(data, min_clusters=5, max_clusters=10):
+def calculate_optimal_clusters(data, min_clusters=2, max_clusters=10):
     scores = []
     for n_clusters in range(min_clusters, max_clusters + 1):
-        kmeans = KMeans(n_clusters=n_clusters, random_state=1000, n_init=3)
+        kmeans = KMeans(n_clusters=n_clusters, random_state=1000, n_init="auto")
         kmeans.fit(data)
         score = silhouette_score(data, kmeans.labels_)
         scores.append((n_clusters, score))
@@ -50,7 +50,7 @@ def dominant_colors(image_path, min_clusters=2, max_clusters=10, target_size=(15
         n_clusters=best_clusters if best_clusters is not None else min_clusters,
         init="k-means++",
         random_state=1000,
-        n_init=3
+        n_init="auto"
     ).fit(ar)
     codes = kmeans.cluster_centers_
 
