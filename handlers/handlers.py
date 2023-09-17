@@ -1,16 +1,19 @@
+# pylint: disable=missing-module-docstring missing-function-docstring wrong-import-order unused-argument import-error useless-return
+# pylint: disable=line-too-long too-many-locals invalid-name unused-import consider-using-f-string wildcard-import unused-wildcard-import
+
 # Build-in modules
 import html
 import json
-import traceback
 import logging
 import os
+import traceback
 
 # Added modules
+import numpy as np
+from PIL import Image
 from telegram import ForceReply, Update, InputFile
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
-import numpy as np
-from PIL import Image, ImageDraw
 
 # Application modules
 from config import CHAT_ID
@@ -33,7 +36,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("Help!")
+    await update.message.reply_text("Send me a picture and I will return \
+                                     the dominate colors on it!")
 
 
 async def echo_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -54,7 +58,7 @@ async def echo_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     photo_path = "{}.jpg".format(file_id)
 
     # Get the dominant colors using the provided dominant_colors function
-    colors = dominant_colors(photo_path)
+    colors = dominant_colors(photo_path, calculate_optimal=True)
 
     # Ensure RGB values are within 0-255 range
     valid_colors = [(r, g, b) for r, g, b in colors if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255]
