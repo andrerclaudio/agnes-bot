@@ -4,8 +4,8 @@
 # Added modules
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
-from config import TOKEN
 # Application modules
+from config import TOKEN
 from handlers.handlers import *
 
 # Enable logging

@@ -8,9 +8,9 @@ import logging
 import os
 import traceback
 
+# Added modules
 import numpy as np
 from PIL import Image
-# Added modules
 from telegram import ForceReply, Update, InputFile
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
@@ -36,8 +36,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("Send me a pictutre and I will return \
-                                     the dominat colors on it!")
+    await update.message.reply_text("Send me a picture and I will return \
+                                     the dominate colors on it!")
 
 
 async def echo_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

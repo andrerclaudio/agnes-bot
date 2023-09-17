@@ -9,7 +9,6 @@ import numpy as np
 import scipy
 from PIL import Image
 from sklearn.cluster import KMeans
-# from functools import lru_cache
 from sklearn.metrics import silhouette_score
 
 NUM_WORKERS = int(multiprocessing.cpu_count())  # Number of parallel workers
@@ -26,7 +25,6 @@ def calculate_optimal_clusters(data, min_clusters=5, max_clusters=10):
     return scores
 
 
-# @lru_cache(maxsize=None)  # Cache the dominant_colors function results
 def dominant_colors(image_path, min_clusters=2, max_clusters=10, target_size=(150, 150), calculate_optimal=False):
     image = Image.open(image_path)  # Open the image from the path
     # Resize the image to the target size
