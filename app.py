@@ -1,9 +1,12 @@
+# pylint: disable=missing-module-docstring missing-function-docstring wrong-import-order unused-argument import-error useless-return
+# pylint: disable=line-too-long too-many-locals invalid-name unused-import consider-using-f-string wildcard-import unused-wildcard-import
+
 # Added modules
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
+from config import TOKEN
 # Application modules
 from handlers.handlers import *
-from config import TOKEN
 
 # Enable logging
 logging.basicConfig(
