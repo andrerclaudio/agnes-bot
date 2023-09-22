@@ -47,7 +47,7 @@ def dominant_colors(image_path, min_clusters=2, max_clusters=10, target_size=(15
         best_clusters = max(final_scores, key=lambda x: x[1])[0]
 
     kmeans = KMeans(
-        n_clusters=best_clusters if best_clusters is not None else min_clusters,
+        n_clusters=best_clusters if best_clusters is not None else (min_clusters + 3),
         init="k-means++",
         random_state=1000,
         n_init="auto"

@@ -58,7 +58,7 @@ async def echo_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     photo_path = "{}.jpg".format(file_id)
 
     # Get the dominant colors using the provided dominant_colors function
-    colors = dominant_colors(photo_path, calculate_optimal=True)
+    colors = dominant_colors(photo_path, calculate_optimal=False)
 
     # Ensure RGB values are within 0-255 range
     valid_colors = [(r, g, b) for r, g, b in colors if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255]
