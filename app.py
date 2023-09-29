@@ -1,9 +1,13 @@
 # pylint: disable=missing-module-docstring missing-function-docstring wrong-import-order unused-argument import-error useless-return
 # pylint: disable=line-too-long too-many-locals invalid-name unused-import consider-using-f-string wildcard-import unused-wildcard-import
 
+# Modules
+# from functools import partial
+
 # Added modules
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
+from board.raspberry import DigitalFinger
 # Application modules
 from config import TOKEN
 from handlers.handlers import *
@@ -17,6 +21,9 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 def application():
+    """Init the class."""
+    finger = DigitalFinger()
+
     """Start the bot."""
     # Create the Application and pass it your bot's token.
     app = Application.builder().token(TOKEN).build()
@@ -24,6 +31,11 @@ def application():
     # on different commands - answer in Telegram
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
+
+    # Add the new "Asimov" command handler
+    # app.add_handler(CommandHandler("Asimov", partial(asimov_control, ctx=finger))
+    app.add_handler(CommandHandler('Asimov', lambda update, context: asimov_control(update, finger)))
+    # app.add_handler(CommandHandler("Asimov", asimov_control, pass_args=True, pass_args_kwargs=[finger]))
 
     # on non command i.e. message - echo the message on Telegram
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo_text))

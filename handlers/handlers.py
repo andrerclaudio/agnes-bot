@@ -16,6 +16,7 @@ from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
 # Application modules
+from board.raspberry import DigitalFinger
 from config import CHAT_ID
 from intelligence.pallet import dominant_colors
 
@@ -124,3 +125,15 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
     await context.bot.send_message(
         chat_id=CHAT_ID, text=message, parse_mode=ParseMode.HTML
     )
+
+
+async def asimov_control(update: Update, finger: DigitalFinger) -> None:
+    # async def asimov_control(update: Update, context: ContextTypes.DEFAULT_TYPE, finger: DigitalFinger) -> None:
+    # async def asimov_control(update: Update, context: ContextTypes.DEFAULT_TYPE, ctx) -> None:
+    """Turn on and off Asimov remote server."""
+
+    # Call the method to turn on the server
+    if finger.digital_finger():
+        await update.message.reply_text("Server turned on/off successfully!")
+    else:
+        await update.message.reply_text("Failed to turn on/off the server.")
