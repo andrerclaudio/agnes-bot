@@ -128,8 +128,6 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
 
 
 async def asimov_control(update: Update, finger: DigitalFinger) -> None:
-    # async def asimov_control(update: Update, context: ContextTypes.DEFAULT_TYPE, finger: DigitalFinger) -> None:
-    # async def asimov_control(update: Update, context: ContextTypes.DEFAULT_TYPE, ctx) -> None:
     """Turn on and off Asimov remote server."""
 
     # Call the method to turn on the server
