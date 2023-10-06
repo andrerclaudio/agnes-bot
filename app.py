@@ -51,5 +51,3 @@ def application():
     finally:
         # Clean up GPIO and exit
         finger.clean()
-
-
