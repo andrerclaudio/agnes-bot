@@ -21,24 +21,35 @@ def application():
     """Init the class."""
     finger = DigitalFinger()
 
-    """Start the bot."""
-    # Create the Application and pass it your bot's token.
-    app = Application.builder().token(TOKEN).build()
+    try:
 
-    # on different commands - answer in Telegram
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("help", help_command))
+        """Start the bot."""
+        # Create the Application and pass it your bot's token.
+        app = Application.builder().token(TOKEN).build()
+    
+        # on different commands - answer in Telegram
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CommandHandler("help", help_command))
+    
+        # Add the new "Asimov" command handler
+        app.add_handler(CommandHandler("Asimov", lambda update, context: asimov_control(update, finger)))
+    
+        # on non command i.e. message - echo the message on Telegram
+        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo_text))
+        # Add a handler for photo messages
+        app.add_handler(MessageHandler(filters.PHOTO, echo_photo))
+    
+        # ...and the error handler
+        app.add_error_handler(error_handler)
+    
+        # Run the bot until the user presses Ctrl-C
+        app.run_polling(allowed_updates=Update.ALL_TYPES)
 
-    # Add the new "Asimov" command handler
-    app.add_handler(CommandHandler("Asimov", lambda update, context: asimov_control(update, finger)))
+    except Exception as e:
+        logging.error(f"Something went wrong -- {str(e)}", exc_info=False) 
 
-    # on non command i.e. message - echo the message on Telegram
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo_text))
-    # Add a handler for photo messages
-    app.add_handler(MessageHandler(filters.PHOTO, echo_photo))
+    finally:
+        # Clean up GPIO and exit
+        finger.clean()
 
-    # ...and the error handler
-    app.add_error_handler(error_handler)
 
-    # Run the bot until the user presses Ctrl-C
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
