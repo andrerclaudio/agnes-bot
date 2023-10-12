@@ -2,11 +2,8 @@
 # pylint: disable=line-too-long too-many-locals invalid-name unused-import consider-using-f-string wildcard-import unused-wildcard-import
 
 # Build-in modules
-import html
-import json
 import logging
 import os
-import traceback
 
 # Added modules
 import numpy as np
@@ -17,7 +14,7 @@ from telegram.ext import ContextTypes
 
 # Application modules
 from board.raspberry import DigitalFinger
-from config import CHAT_ID
+from config import CHAT_ID, AUTH_USER
 from intelligence.pallet import dominant_colors
 
 # Logging handler
@@ -38,7 +35,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     await update.message.reply_text("Send me a picture and I will return \
-                                     the dominate colors on it!")
+                                     the dominant colors on it!")
 
 
 async def echo_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -46,8 +43,8 @@ async def echo_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(update.message.text)
 
 
-async def echo_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Echo the received photo back to the user with dominant colors."""
+async def colors(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Show the user the dominant colors."""
 
     # Get the largest available photo
     photo = update.message.photo[-1]
@@ -59,10 +56,10 @@ async def echo_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     photo_path = "{}.jpg".format(file_id)
 
     # Get the dominant colors using the provided dominant_colors function
-    colors = dominant_colors(photo_path, calculate_optimal=False)
+    dmt = dominant_colors(photo_path, calculate_optimal=False)
 
     # Ensure RGB values are within 0-255 range
-    valid_colors = [(r, g, b) for r, g, b in colors if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255]
+    valid_colors = [(r, g, b) for r, g, b in dmt if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255]
 
     if len(valid_colors) == 0:
         await update.message.reply_text("No valid dominant colors found.")
@@ -101,24 +98,10 @@ async def echo_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Log the error and send a telegram message to notify the developer."""
-    # Log the error before we do anything else, so we can see it even if something breaks.
-    logger.error("Exception while handling an update:", exc_info=context.error)
 
-    # traceback.format_exception returns the usual python message about an exception, but as a
-    # list of strings rather than a single string, so we have to join them together.
-    tb_list = traceback.format_exception(None, context.error, context.error.__traceback__)
-    tb_string = "".join(tb_list)
-
-    # Build the message with some markup and additional information about what happened.
-    # You might need to add some logic to deal with messages longer than the 4096-character limit.
-    update_str = update.to_dict() if isinstance(update, Update) else str(update)
+    logger.error("Exception while handling an update:", exc_info=False)
     message = (
         f"An exception was raised while handling an update\n"
-        f"<pre>update = {html.escape(json.dumps(update_str, indent=2, ensure_ascii=False))}"
-        "</pre>\n\n"
-        f"<pre>context.chat_data = {html.escape(str(context.chat_data))}</pre>\n\n"
-        f"<pre>context.user_data = {html.escape(str(context.user_data))}</pre>\n\n"
-        f"<pre>{html.escape(tb_string)}</pre>"
     )
 
     # Finally, send the message
@@ -130,8 +113,14 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
 async def asimov_control(update: Update, finger: DigitalFinger) -> None:
     """Turn on and off Asimov remote server."""
 
-    # Call the method to turn on the server
-    if finger.digital_finger():
-        await update.message.reply_text("Server turned on/off successfully!")
+    # Check if the user ID from the incoming update matches the one you want to filter
+    if str(update.message.from_user.id) == str(AUTH_USER):
+
+        # Call the method to turn on the server
+        if finger.digital_finger():
+            await update.message.reply_text("Server turned on/off successfully!")
+        else:
+            await update.message.reply_text("Failed to turn on/off the server.")
+
     else:
-        await update.message.reply_text("Failed to turn on/off the server.")
+        await update.message.reply_text("You are not authorized to use this bot.")

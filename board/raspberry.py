@@ -19,7 +19,7 @@ class DigitalFinger(object):
 
         # Define the GPIO pin where the Server is connected
         self.__SERVER_PIN = 6
-        # Define how many times it will hold the pin state
+        # Define how long it will hold the pin state
         self.__HOLD_DELAY = 0.5
         self.__initialized = False
         GPIO.setmode(GPIO.BCM)
@@ -65,3 +65,9 @@ class DigitalFinger(object):
 
         except Exception as e:
             logging.exception(f"An error occurred during PIN initialization: {e}", exc_info=False)
+
+    def clean(self):
+        """ Clean the pin usage."""
+        logging.info('Closing the APP.')
+        self.__initialized = False
+        GPIO.cleanup()

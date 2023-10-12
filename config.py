@@ -8,3 +8,4 @@ config = configparser.ConfigParser()
 config.read_file(open('/path/to/config-file/agnes-bot/config.ini', encoding='utf-8'))
 TOKEN = config['DEFAULT']['token']
 CHAT_ID = config['DEFAULT']['error_forward_id']
+AUTH_USER = config['DEFAULT']['auth_user']

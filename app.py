@@ -1,6 +1,9 @@
 # pylint: disable=missing-module-docstring missing-function-docstring wrong-import-order unused-argument import-error useless-return
 # pylint: disable=line-too-long too-many-locals invalid-name unused-import consider-using-f-string wildcard-import unused-wildcard-import
 
+# Build-in modules
+import time
+
 # Added modules
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
@@ -18,6 +21,9 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 def application():
+    # Just a delay doing nothing and making sure the connection was properly established.
+    time.sleep(60)
+
     """Init the class."""
     finger = DigitalFinger()
 
@@ -37,7 +43,7 @@ def application():
         # on non command i.e. message - echo the message on Telegram
         app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo_text))
         # Add a handler for photo messages
-        app.add_handler(MessageHandler(filters.PHOTO, echo_photo))
+        app.add_handler(MessageHandler(filters.PHOTO, colors))
     
         # ...and the error handler
         app.add_error_handler(error_handler)

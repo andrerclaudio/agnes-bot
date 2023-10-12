@@ -1,0 +1,14 @@
+[Unit]
+Description=Agnes Bot Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/bridge/agnes-bot/main.py
+WorkingDirectory=/home/bridge/agnes-bot
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=bridge
+
+[Install]
+WantedBy=multi-user.target
