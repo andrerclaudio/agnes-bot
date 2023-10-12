@@ -20,6 +20,9 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 def application():
+    # The application start from here
+    logging.info('The application ha started!')
+
     # Just a delay doing nothing and making sure the connection was properly established.
     time.sleep(60)
 
