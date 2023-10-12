@@ -7,7 +7,6 @@ import time
 # Added modules
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
-from board.raspberry import DigitalFinger
 # Application modules
 from config import TOKEN
 from handlers.handlers import *
