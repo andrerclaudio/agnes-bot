@@ -3,7 +3,7 @@ Description=Agnes Bot Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/bridge/agnes-bot/main.py
+ExecStart=/home/bridge/agnes-bot/venv/bin/python3 main.py
 WorkingDirectory=/home/bridge/agnes-bot
 StandardOutput=inherit
 StandardError=inherit
