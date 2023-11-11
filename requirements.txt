@@ -4,3 +4,7 @@ numpy
 scikit-learn
 Pillow
 matplotlib
+wheel
+RPi.GPIO
+paho-mqtt
+requests
