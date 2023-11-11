@@ -11,10 +11,11 @@ from PIL import Image
 from telegram import ForceReply, Update, InputFile
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
+import requests
 
 # Application modules
 from board.raspberry import DigitalFinger
-from config import CHAT_ID, AUTH_USER
+from config import CHAT_ID, AUTH_USER, TOKEN
 from intelligence.pallet import dominant_colors
 
 # Logging handler
@@ -124,3 +125,34 @@ async def asimov_control(update: Update, finger: DigitalFinger) -> None:
 
     else:
         await update.message.reply_text("You are not authorized to use this bot.")
+
+
+def send_telegram_message(message) -> None:
+    """
+    Sends a text message to a Telegram chat using the Telegram Bot API.
+
+    Parameters:
+    - message (str): The text message to be sent.
+
+    Returns:
+    None
+
+    Note:
+    Ensure that the `TOKEN` and `CHAT_ID` variables are properly configured with the
+    Telegram Bot API token and the target chat ID before using this function.
+
+    Example:
+    ```
+    send_telegram_message("Hello, world!")
+    ```
+    """
+
+    send_text = 'https://api.telegram.org/bot' + TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&parse_mode=Markdown&text=' + message
+
+    try:
+        # Send the message to the specified chat ID
+        response = requests.get(send_text)
+        logging.debug(response)
+
+    except requests.exceptions as e:
+        logging.error(f"Error sending message to Telegram: {str(e)}", exc_info=False)

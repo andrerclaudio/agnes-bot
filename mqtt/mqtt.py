@@ -3,9 +3,9 @@ MQTT application in general.
 """
 
 import logging
-import requests
-from config import CHAT_ID, MQTT_CLIENT_ID, MQTT_TOPIC, TOKEN
 import paho.mqtt.client as mqtt
+from config import MQTT_CLIENT_ID, MQTT_TOPIC
+from handlers.handlers import send_telegram_message
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s")
@@ -117,21 +117,36 @@ class AgnesMqttClient(object):
 
     def __on_message(self, client, userdata, message) -> None:
         """
-        Parse the incoming messages.
+        Parse incoming messages from the MQTT broker.
+
+        Parameters:
+        - client: The MQTT client instance.
+        - userdata: User data associated with the MQTT client.
+        - message: The received message containing topic and payload.
+
+        Returns:
+        None
+
+        Description:
+        This method is called when a message is received on the MQTT topic.
+        It extracts information about the topic and payload, logs the details,
+        and sends the formatted message to the specified chat ID using the
+        send_telegram_message function.
+
+        Example:
+        ```
+        def on_message(client, userdata, message):
+            instance.__on_message(client, userdata, message)
+        ```
         """
         
         _ = client
         _ = userdata
+        topic = message.topic
 
         # This method is called when a message is received on the MQTT topic
         message = message.payload.decode('utf-8')
-        logging.info("Received MQTT message: %s", message)
-
-        try:
-            # Send the message to the specified chat ID
-            send_text = 'https://api.telegram.org/bot' + TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&parse_mode=Markdown&text=' + message
-            response = requests.get(send_text)
-            logging.debug(response)
-
-        except Exception as e:
-            logging.error(f"Error sending message to Telegram: {str(e)}", exc_info=False)
+        logging.info("Received MQTT message [%s]: %s", topic, message)
+        message = f'[{topic}]: {message}'
+        # Send the message to the specified chat ID
+        send_telegram_message(message)

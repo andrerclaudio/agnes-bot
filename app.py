@@ -8,7 +8,7 @@ import time
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 # Application modules
-from config import TOKEN
+from config import MQTT_TOPIC, TOKEN
 from handlers.handlers import *
 from mqtt.mqtt import AgnesMqttClient
 
@@ -42,7 +42,7 @@ def application():
         client.mqttc.loop_start()
 
         """Start the bot."""
-        # Create the Application and pass it your bot's token.
+        # Create the Application and pass it your bot's token
         bot = Application.builder().token(TOKEN).build()
 
         # on different commands - answer in Telegram
@@ -59,7 +59,11 @@ def application():
     
         # ...and the error handler
         bot.add_error_handler(error_handler)
-    
+
+        # Send a message signalizing the board is up
+        message= message = f'[{MQTT_TOPIC}]: Bridge board is Up.'
+        send_telegram_message(message)
+
         # Run the bot until the user presses Ctrl-C
         bot.run_polling(allowed_updates=Update.ALL_TYPES)
 
