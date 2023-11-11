@@ -151,7 +151,7 @@ def send_telegram_message(message) -> None:
 
     try:
         # Send the message to the specified chat ID
-        response = requests.get(send_text)
+        response = requests.get(send_text, timeout=5)
         logging.debug(response)
 
     except requests.exceptions as e:
